@@ -7,6 +7,7 @@ methods for other classes
 import datetime
 import time
 import uuid
+import models
 
 class BaseModel:
     """
