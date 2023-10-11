@@ -26,7 +26,7 @@ class BaseModel:
                     of __dict__ of the instance
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         Initialize a base model instance with the following attributes:
         id:
@@ -35,12 +35,24 @@ class BaseModel:
             time when the instance was created
         updated_at:
             time when the instance was updated
+        Objetcs will also be instantiated
         """
         self.id = str(uuid.uuid4())
         self.created_at = datetime.datetime.now()
         self.updated_at = datetime.datetime.now()
 
-    def str(self):
+        if len(kwargs) != 0:
+           tform = "%Y-%m-%dT%H:%M:%S.%f"
+           for a, b in kwargs.items():
+             if a == "created_at" or a == "updated_at":
+               self.__dict__[a] = datetime.strptime(b, tform)
+             else:
+               self.__dict__[a] = b
+        else:
+          models.storage.new(self)
+
+
+    def __str__(self):
         """
         Prints: [<class name>] (<self.id>) <self.__dict__>
         """
@@ -51,6 +63,7 @@ class BaseModel:
         Updates the public instance attribute updated_at with the current datetime
         """
         self.updated_at = datetime.datetime.now()
+        models.storgae.save()
 
     def to_dict(self):
         """
