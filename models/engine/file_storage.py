@@ -3,7 +3,6 @@
    Deserialize JSON file to instance
 """
 
-from models.base_model import BaseModel
 import json
 
 

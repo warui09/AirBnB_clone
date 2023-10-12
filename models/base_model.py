@@ -5,9 +5,10 @@ methods for other classes
 """
 
 import datetime
+import models
 import time
 import uuid
-import models
+from models.engine import file_storage
 
 class BaseModel:
     """
@@ -36,7 +37,7 @@ class BaseModel:
             time when the instance was created
         updated_at:
             time when the instance was updated
-        Objetcs will also be instantiated
+        Objects will also be instantiated
         """
         self.id = str(uuid.uuid4())
         self.created_at = datetime.datetime.now()
@@ -50,7 +51,8 @@ class BaseModel:
              else:
                self.__dict__[a] = b
         else:
-          models.storage.new(self)
+            file_storage
+            models.engine.storage.new(self)
 
 
     def __str__(self):
@@ -64,7 +66,7 @@ class BaseModel:
         Updates the public instance attribute updated_at with the current datetime
         """
         self.updated_at = datetime.datetime.now()
-        models.storage.save()
+        models.engine.storage.save()
 
     def to_dict(self):
         """
@@ -74,4 +76,3 @@ class BaseModel:
         obj_dict[__class__] = self.__class__.__name
         obj_dict['created_at'] = self.created_at.isoformat()
         obj_dict['updated_at'] = self.updated_at.isoformat()
-        return obj_dict #so that it returns what you docummented --this is an added line
