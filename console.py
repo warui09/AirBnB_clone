@@ -5,8 +5,7 @@ Entry point of the command interpreter
 
 import models
 import cmd
-#from models import base_model
-from models.base_model import BaseModel
+from models import base_model
 
 class HBNBCommand(cmd.Cmd):
     """
