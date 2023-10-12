@@ -3,13 +3,19 @@
 Entry point of the command interpreter
 """
 
+import models
 import cmd
-from models import base_model
+#from models import base_model
+from models.base_model import BaseModel
 
 class HBNBCommand(cmd.Cmd):
     """
     Command interpreter for the Airbnb project
+
+    Attribute:
+        prompt (str): This will be used as a cmd prompt
     """
+
     prompt = '(hbnb) '
 
     def do_quit(self, line) -> None:
