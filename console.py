@@ -10,6 +10,9 @@ from models.base_model import BaseModel
 class HBNBCommand(cmd.Cmd):
     """
     Command interpreter for the Airbnb project
+
+    Attribute:
+        prompt (str): This will be used as a cmd prompt
     """
     prompt = '(hbnb) '
     __classes{
@@ -31,6 +34,12 @@ class HBNBCommand(cmd.Cmd):
         """Override the Cmd.emptyline() method
         """
         pass
+
+    def do_create(self):
+        """used as: create <class>
+        Creates a new instance of BaseModel,
+        saves it (to the JSON file) and prints the id.
+         Ex: $ create BaseModel"""
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
