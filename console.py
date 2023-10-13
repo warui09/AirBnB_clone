@@ -5,6 +5,7 @@ Entry point of the command interpreter
 
 import models
 import cmd
+import shlex
 from models.base_model import BaseModel
 from models.user import User
 from models.amenity import Amenity
