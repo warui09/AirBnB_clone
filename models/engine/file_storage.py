@@ -43,3 +43,4 @@ def save(self):
 def new(self, obj):
     """sets in __objects the obj with key <obj class name>.id"""
     class_name = type(obj).name
+    FileStorage.__objects["{}.{}".format(class_name, object.id)] = object
