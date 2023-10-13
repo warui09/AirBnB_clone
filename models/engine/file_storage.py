@@ -44,3 +44,8 @@ def new(self, obj):
     """sets in __objects the obj with key <obj class name>.id"""
     class_name = type(obj).name
     FileStorage.__objects["{}.{}".format(class_name, object.id)] = object
+
+def reload(self):
+   """deserializes JSON file to __objects (only if the JSON file (__file_path) exists ; otherwise,
+     do nothing. If the file doesn’t exist, no exception should be raised)
+   """
