@@ -33,3 +33,7 @@ def save(self):
     obj_dict = {obj: obj_dict[obj].to_dict() for obj in obj_dict.keys()}
     with open(FileStorage.__file_path, 'w') as f:
         json.dump(obj_dict, f)
+
+def new(self, obj):
+    """sets in __objects the obj with key <obj class name>.id"""
+    class_name = type(obj).name
