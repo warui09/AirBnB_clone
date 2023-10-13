@@ -5,7 +5,13 @@ Entry point of the command interpreter
 
 import models
 import cmd
-from models import base_model
+from models.base_model import BaseModel
+from models.user import User
+from models.amenity import Amenity
+from models.state import State
+from models.place import Place
+from models.review import Review
+import re
 
 class HBNBCommand(cmd.Cmd):
     """
@@ -58,6 +64,28 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
         else:
             print("string representation")
+
+    def do_destroy(self, arg):
+        """Deletes an instance based on 
+        the class name and id"""
+        parsed_args = parse(arg) #Start working on the class names
+        #parse function is used to break down arg input to the relevant components
+        objectdict = models.storage.all()
+
+        if len(parsed_args) == 0:
+            print("** class name missing **")
+        elif parsed_args[0] not in HBNBCommand.__classes:
+            print("** class doesn't exist **")
+        elif len(parsed_args) == 1:
+            print("** instance id missing **")
+        elif "{}.{}".format(parsed_args[0], parsed_args[1]) not in objectdict.keys():
+            print("** no instance found **")
+        else:
+            del objectdict["{}.{}".format(parsed_args[0], parsed_args[1])]
+            models.storage.save()
+
+
+
 
 
 if __name__ == '__main__':
