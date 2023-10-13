@@ -26,3 +26,10 @@ class FileStorage:
 def all(self):
     """Returns objects ass private class attr"""
     return FileStorage.__objects
+
+def save(self):
+    """serializes _objects to JSON file"""
+    obj_dict = FileStorage.__objects
+    obj_dict = {obj: obj_dict[obj].to_dict() for obj in obj_dict.keys()}
+    with open(FileStorage.__file_path, 'w') as f:
+        json.dump(obj_dict, f)
