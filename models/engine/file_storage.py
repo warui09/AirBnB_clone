@@ -49,3 +49,12 @@ def reload(self):
    """deserializes JSON file to __objects (only if the JSON file (__file_path) exists ; otherwise,
      do nothing. If the file doesn’t exist, no exception should be raised)
    """
+   try:
+       with open(FileStorage.__file_path) as f:
+           obj_diction = json.loads(f.read())
+           for obj in obj_diction.values():
+               class_name = object["__class__"]
+               del object["__class__"]
+               self.new(eval(class_name)(**object))
+   except FileNotFoundError:
+       return
