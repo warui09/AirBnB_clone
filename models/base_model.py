@@ -5,7 +5,7 @@ methods for other classes
 """
 
 import datetime
-#import models
+import models
 import time
 import uuid
 from models.engine import file_storage
