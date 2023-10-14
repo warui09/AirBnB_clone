@@ -96,6 +96,37 @@ class TestAmenityInstatiation(unittest.TestCase):
         self.assertIn(amenity, storage.all().values())
 
         self.assertIsInstance(amenity.id, str)
+        self.assertIsInstance(amenity.created_at, datetime)
+        self.assertIsInstance(amenity.updated_at, datetime)
+        self.assertIsInstance(Amenity.name, str)
+        self.assertIn("name", dir(amenity))
+        self.assertNotIn("name", amenity.__dict__)
+
+        amenity2 = Amenity()
+        self.assertNotEqual(amenity.id, amenity2.id)
+
+        self.asssertNotEqual(amenity.id, amenity2.id)
+
+        self.assertLess(amenity.created_at, amenity2.created_at)
+        self.assertLess(amenity.updated_at, amenity2.updated_at)
+
+        dt = datetime.today()
+        dt_repr = repr(dt)
+        amenity.id = "456789"
+        amenity.created_at = amenity.updated_at = dt
+        amen_str = amenity.__str__()
+        self.assertIn("[Amenity] (456789)", amen_str)
+        self.assertIn("'id': '456789'", amen_str)
+        self.assertIn("'created_at': " + dt_repr, amen_str)
+        self.assertIn("'updated_at': " + dt_repr, amen_str)
+
+        amenity3 = Amenity(id="678", created_at = dt, updated_at = dt)
+        self.assertEqual(amenity3.id, "678")
+        self.assertEqual(amenity3.created_at, dt)
+        self.assertEqual(amenity3.updated_at, dt)
+
+        with self.assertRaises(TypeError):
+            Amenity(id=None, created_at=None, updated_at=None)
 
 
 if __name__ == '__main__':
