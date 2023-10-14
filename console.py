@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.state import State
 from models.place import Place
 from models.review import Review
+from models.engine import file_storage
 import re
 
 class HBNBCommand(cmd.Cmd):
@@ -21,6 +22,15 @@ class HBNBCommand(cmd.Cmd):
     Attribute:
         prompt (str): This will be used as a cmd prompt
     """
+
+    valid_classes = {
+        "BaseModel": BaseModel,
+        "User": User,
+        "Amenity": Amenity,
+        "State": State,
+        "Place": Place,
+        "Review": Review
+    }
 
     prompt = '(hbnb) '
 
@@ -45,9 +55,9 @@ class HBNBCommand(cmd.Cmd):
         (to the JSON file) and prints the id"""
         if len(line) == 0:
             print("** class name missing **")
-        elif hasattr(base_model, line):
-            new_instance = eval(f'base_model.{line}()')
-            #new_instance.save()
+        elif line in HBNBCommand.valid_classes:
+            new_instance = HBNBCommand.valid_classes[line]()
+            #new_isnstance.save()
             print(new_instance.id)
         else:
             print("** class doesn't exist **")
@@ -57,11 +67,11 @@ class HBNBCommand(cmd.Cmd):
         based on the class name and id"""
         args = line.split()
         class_name, instance_id = args
-        if !class_name:
+        if not class_name:
             print("** class name missing **")
-        elif !hasattr(base_model, class_name):
+        elif not hasattr(base_model, class_name):
             print("** class doesn't exist **")
-        elif !instance_id:
+        elif not instance_id:
             print("** instance id missing **")
         else:
             print("string representation")

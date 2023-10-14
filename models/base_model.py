@@ -5,7 +5,7 @@ methods for other classes
 """
 
 import datetime
-import models
+#import models
 import time
 import uuid
 from models.engine import file_storage
@@ -51,8 +51,8 @@ class BaseModel:
              else:
                self.__dict__[a] = b
         else:
-            file_storage
-            models.engine.storage.new(self)
+            #file_storage.models.engine.storage.new(self)
+            pass
 
 
     def __str__(self):
