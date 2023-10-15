@@ -53,28 +53,36 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, line) -> None:
         """ Creates a new instance of BaseModel, saves it
         (to the JSON file) and prints the id"""
-        if len(line) == 0:
+        if not line:
             print("** class name missing **")
         elif line in HBNBCommand.valid_classes:
             new_instance = HBNBCommand.valid_classes[line]()
-            #new_isnstance.save()
+            new_isnstance.save()
             print(new_instance.id)
         else:
             print("** class doesn't exist **")
 
     def do_show(self, line) -> None:
-        """Prints the string representation of an instance
-        based on the class name and id"""
-        args = line.split()
-        class_name, instance_id = args
-        if not class_name:
-            print("** class name missing **")
-        elif not hasattr(base_model, class_name):
-            print("** class doesn't exist **")
-        elif not instance_id:
-            print("** instance id missing **")
+    """Prints the string representation of an instance
+    based on the class name and id"""
+    args = line.split()
+
+    if not args:
+        print("** class name missing **")
+    elif args[0] not in HBNBCommand.valid_classes:
+        print("** class doesn't exist **")
+    elif len(args) < 2:
+        print("** instance id missing **")
+    else:
+        class_name = args[0]
+        instance_id = args[1]
+        objectdict = models.storage.all()
+        instance_key = "{}.{}".format(class_name, instance_id)
+
+        if instance_key in objectdict:
+            print(objectdict[instance_key])
         else:
-            print("string representation")
+            print("** no instance found **")
 
     def do_destroy(self, arg):
         """Deletes an instance based on 
@@ -145,11 +153,6 @@ class HBNBCommand(cmd.Cmd):
 
         setattr(objectdict[instance_key], attribute_name, casted_value)
         models.storage.save()
-
-
-
-
-
 
 
 
