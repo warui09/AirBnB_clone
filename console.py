@@ -57,7 +57,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif line in HBNBCommand.valid_classes:
             new_instance = HBNBCommand.valid_classes[line]()
-            new_isnstance.save()
+            new_instance.save()
             print(new_instance.id)
         else:
             print("** class doesn't exist **")
@@ -101,6 +101,25 @@ class HBNBCommand(cmd.Cmd):
         else:
             del objectdict["{}.{}".format(parsed_args[0], parsed_args[1])]
             models.storage.save()
+
+    def do_all(self, line):
+        """Prints all string representations of all instances
+        based or not on the class name"""
+        args = line.split()
+        all_objects = models.storage.all()
+        result = []
+
+        if not args:
+            for key, value in all_objects.items():
+                result.append(str(value))
+            print(result)
+        elif args[0] in models.classes:
+            for key, value in all_objects.items():
+                if args[0] == value.__class__.__name__:
+                    result.append(str(value))
+            print(result)
+        else:
+            print("** class doesn't exist **")
 
     def do_update(self, arg):
         """
