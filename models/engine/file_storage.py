@@ -37,7 +37,7 @@ class FileStorage:
 
     def all(self):
         """Returns objects ass private class attr"""
-        return FileStorage.__objects
+        return FileStorage._objects
 
     def save(self):
         """serializes _objects to JSON file"""
@@ -48,8 +48,8 @@ class FileStorage:
 
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
-        class_name = type(obj).name
-        FileStorage.__objects["{}.{}".format(class_name, object.id)] = object
+        class_name = type(obj).__name__
+        FileStorage._objects["{}.{}".format(class_name, obj.id)] = obj
 
     def reload(self):
         """deserializes JSON file to __objects (only if the JSON file
