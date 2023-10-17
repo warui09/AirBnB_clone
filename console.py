@@ -79,7 +79,7 @@ class HBNBCommand(cmd.Cmd):
                 print(objectdict[instance_key])
             else:
                 print("** no instance found **")
-
+                
     def do_destroy(self, arg):
         """Deletes an instance based on 
         the class name and id"""
@@ -127,7 +127,7 @@ class HBNBCommand(cmd.Cmd):
         You can assume the attribute name is valid (exists for this model).
         The attribute value must be casted to the attribute type.
         """
-        args = shlex.split(line)
+        args = shlex.split(arg)
         args_size = len(args)
         if args_size == 0:
             print('** class name missing **')
