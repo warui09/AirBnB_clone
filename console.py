@@ -14,6 +14,7 @@ from models.place import Place
 from models.review import Review
 from models.engine import file_storage
 import re
+from datetime import datetime
 
 class HBNBCommand(cmd.Cmd):
     """
@@ -45,10 +46,6 @@ class HBNBCommand(cmd.Cmd):
         print()
         exit(0)
 
-    def emptyline(self) -> None:
-        """Override the Cmd.emptyline() method
-        """
-        pass
 
     def do_create(self, line) -> None:
         """ Creates a new instance of BaseModel, saves it
@@ -130,47 +127,110 @@ class HBNBCommand(cmd.Cmd):
         You can assume the attribute name is valid (exists for this model).
         The attribute value must be casted to the attribute type.
         """
-        parsed_args = parse(arg)
-        objectdict = models.storage.all()
+        args = shlex.split(line)
+        args_size = len(args)
+        if args_size == 0:
+            print('** class name missing **')
+        elif args[0] not in self.allowed_classes:
+            print("** class doesn't exist **")
+        elif args_size == 1:
+            print('** instance id missing **')
+        else:
+            key = args[0] + '.' + args[1]
+            inst_data = models.storage.all().get(key)
+            if inst_data is None:
+                print('** no instance found **')
+            elif args_size == 2:
+                print('** attribute name missing **')
+            elif args_size == 3:
+                print('** value missing **')
+            else:
+                args[3] = self.analyze_parameter_value(args[3])
+                setattr(inst_data, args[2], args[3])
+                setattr(inst_data, 'updated_at', datetime.now())
+                models.storage.save()
 
-        if len(parsed_args) < 2:
-            print("** Usage: update <class name> <id> <attribute name> \"<attribute value>\" **")
-            return False
 
-        class_name = parsed_args[0]
-        instance_id = parsed_args[1]
+    def get_objects(self, instance=''):
+        """Gets the elements created by the console
 
-        if class_name not in HBNBCommand.__classes:
-            print("** Class doesn't exist **")
-            return False
+        This method takes care of obtaining the information
+        of all the instances created in the file `objects.json`
+        that is used as the storage engine.
 
-        instance_key = "{}.{}".format(class_name, instance_id)
+        When an instance is sent as an argument, the function
+        takes care of getting only the instances that match the argument.
 
-        if instance_key not in objectdict.keys():
-            print("** No instance found **")
-            return False
+        Args:
+            instance (:obj:`str`, optional): The instance to finds into
+                the objects.
 
-        if len(parsed_args) < 4:
-            print("** Attribute name or value missing **")
-            return False
+        Returns:
+            list: If the `instance` argument is not empty, it will search
+            only for objects that match the instance. Otherwise, it will show
+            all instances in the file where all objects are stored.
 
-        attribute_name = parsed_args[2]
-        attribute_value = parsed_args[3]
+        """
+        objects = models.storage.all()
 
-        if attribute_name not in objectdict[instance_key].__class__.__dict__.keys():
-            print(f"** Attribute '{attribute_name}' is not valid for this class **")
-            return False
+        if instance:
+            keys = objects.keys()
+            return [str(val) for key, val in objects.items()
+                    if key.startswith(instance)]
 
-        attribute_type = type(objectdict[instance_key].__class__.__dict__[attribute_name])
+        return [str(val) for key, val in objects.items()]
 
-        try:
-            casted_value = attribute_type(attribute_value)
-        except (ValueError, TypeError):
-            print("** Attribute value could not be cast to the correct type **")
-            return False
 
-        setattr(objectdict[instance_key], attribute_name, casted_value)
-        models.storage.save()
+    def do_default(self, line):
+        """
+        When the command prefix is not recognized, this method
+        looks for whether the command entered has the syntax:
+            "<class name>.<method name>" or not,
+        and links it to the corresponding method in case the
+        class exists and the method belongs to the class.
+
+        """
+        if '.' in line:
+            splitted = re.split(r'\.|\(|\)', line)
+            class_name = splitted[0]
+            method_name = splitted[1]
+
+            if class_name in self.allowed_classes:
+                if method_name == 'all':
+                    print(self.get_objects(class_name))
+                elif method_name == 'count':
+                    print(len(self.get_objects(class_name)))
+                elif method_name == 'show':
+                    class_id = splitted[2][1:-1]
+                    self.do_show(class_name + ' ' + class_id)
+                elif method_name == 'destroy':
+                    class_id = splitted[2][1:-1]
+                    self.do_destroy(class_name + ' ' + class_id)
+
+
+    def analyze_parameter_value(self, value):
+        """Checks a parameter value for an update
+
+        Analyze if a parameter is a string that needs
+        convert to a float number or an integer number.
+
+        Args:
+            value: The value to analyze
+
+        """
+        if value.isdigit():
+            return int(value)
+        elif value.replace('.', '', 1).isdigit():
+            return float(value)
+
+        return value
+
+    def emptyline(self) -> None:
+        """Override the Cmd.emptyline() method
+        """
+        pass
+
+
 
 
 
