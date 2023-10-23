@@ -1,0 +1,15 @@
+header {
+    height: 70px;
+    width: 100%;
+    border-bottom: 1px #CCCCCC solid;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    margin-left: 20px;
+    height: 60px;
+    width: 142px;
+    background-image: url('../images/logo.png');
+    background-size: cover;
+}
